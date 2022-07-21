@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.example.velocity.easybus.model.Bus;
 import com.example.velocity.easybus.repository.BusRepository;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 @RequestMapping("/details")
 public class BusController {
 
@@ -49,7 +51,7 @@ public class BusController {
 	
 	//PUT - http://localhost:9090/bus/details/createbus/62be92b7b998325d41341f45
 	@PutMapping("/createbus/{id}")
-	public ResponseEntity<Bus> updateProduct(@PathVariable(value="id") String bId,@Validated @RequestBody Bus b) 
+	public ResponseEntity<Bus> updateBus(@PathVariable(value="id") String bId,@Validated @RequestBody Bus b) 
 			throws ResourceNotFoundException
 	{
 		Bus bus=brepo.findById(bId).orElseThrow(()-> new ResourceNotFoundException("Bus not found for this Id :" +bId));
@@ -58,8 +60,11 @@ public class BusController {
 		bus.setDepartureLocation(b.getDepartureLocation());
 		bus.setArrivalLocation(b.getArrivalLocation());
 		bus.setDepartureTime(b.getDepartureTime());
-		bus.setDriverName(b.getDriverName());
+		bus.setBusType(b.getBusType());
 		bus.setDriverContact(b.getDriverContact());
+		bus.setPrice(b.getPrice());
+		bus.setDate(b.getDate());
+		bus.setSeatsAvailable(b.getSeatsAvailable());
 
 		final Bus updateBus=brepo.save(bus);
 
@@ -71,7 +76,7 @@ public class BusController {
 	// Get bus by busNo
 	//GET - http://localhost:9090/bus/details/getbybusId/62be92b7b998325d41341f45
 	@GetMapping("/getbybusId/{id}")
-	public ResponseEntity<Bus> getProductById(@PathVariable(value="id") String bId)
+	public ResponseEntity<Bus> getBusById(@PathVariable(value="id") String bId)
 			throws ResourceNotFoundException
 	{
 		Bus bus=brepo.findById(bId).
@@ -94,10 +99,10 @@ public class BusController {
 	//get buses by departure and arrival
 	// GET - http://localhost:9090/bus/details/find/kurnool/hyderabad
 	
-	@GetMapping("/find/{departureLocation}/{arrivalLocation}")
-	public List<Bus> getBusbylocation(@PathVariable("departureLocation") String dL,@PathVariable("arrivalLocation") String aL)
+	@GetMapping("/find/{departureLocation}/{arrivalLocation}/{date}")
+	public List<Bus> getBusbylocation(@PathVariable("departureLocation") String dL,@PathVariable("arrivalLocation") String aL,@PathVariable("date") String date)
 	{
-		return brepo.findBylocation(dL, aL);
+		return brepo.findBylocation(dL, aL,date);
 	}
 	
 	//DELETE - http://localhost:9090/bus/details/createbus/62be92b7b998325d41341f45
@@ -115,6 +120,7 @@ public class BusController {
 		response.put("Delete the Bus",Boolean.TRUE);
 		return response;
 	}
+	
 	
 	
 	

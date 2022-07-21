@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import com.example.velocity.easybus.model.User;
 import com.example.velocity.easybus.repository.UserRepository;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 @RequestMapping("/usd")
 public class UserController {
 	
@@ -97,7 +99,6 @@ public class UserController {
 		user.setName(u.getName());
 		user.setDob(u.getDob());
 		user.setPassword(u.getPassword());
-		user.setGender(u.getGender());
 		user.setPhoneNo(u.getPhoneNo());
 
 		final User updateDetails=urepo.save(user);
@@ -108,7 +109,7 @@ public class UserController {
 	// Get the details of particular login user
 	//GET - http://localhost:9090/bus/usd/getuserdetails/khalid@ims.com
 	@GetMapping("/getuserdetails/{email}")
-	public ResponseEntity<User> getProductById(@PathVariable(value="email") String email)
+	public ResponseEntity<User> getUserById(@PathVariable(value="email") String email)
 			throws ResourceNotFoundException
 	{
 		User user=urepo.findByEmail(email).
